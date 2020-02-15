@@ -5,14 +5,16 @@ from performance.core import augmenters
 from performance.core import mews, metrics
 from performance.core import scorers, Process, utils
 
+thresh = np.arange(0, 14)
 lead_times = np.arange(0, 4, 10 / 60)
 case_scorers = [scorers.PosNeg(tmin=0, tmax=np.inf),
                 scorers.Lead(lead_times=lead_times)]
-
 augmenter = augmenters.NoAugment()
-fig, ax = plt.subplots(3, 2, figsize=(10 ,10), sharey=True)
 periods = [2,4,8]
-plt.ylabel('True Positive Rate')
+
+
+fig, ax = plt.subplots(3, 2, figsize=(10 ,10), sharey=True)
+
 for p, a in zip(periods, ax[:, 0]):
     a.set_ylim([0, 1])
     a.set_ylabel(f'Period = {p} Hours', rotation=90)
@@ -27,9 +29,8 @@ ax[-1, 0].set_xlabel('False Positive Rate')
 ax[-1, 1].set_xlabel('Lead Time (h)')
 
 plot_path = '/home/alex/mews/images/metrics/'
-thresh = np.arange(0, 14)
 
-for f, period in enumerate([2, 4, 8]):
+for f, period in enumerate(periods):
     for i, (mews_scorer, data_level) in enumerate(zip([utils.base, np.median, utils.worst_case], [False, False, True])):
         if mews_scorer.__name__ == 'base':
             case, _ = mews.prepare_case_multiple(period=False, scorer=mews_scorer, data_level=data_level)
