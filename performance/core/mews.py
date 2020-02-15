@@ -462,6 +462,7 @@ def prepare_case_multiple(period=False, scorer='base', data_level=False):
 
     if name == 'base':
         per = ''
+        period = False
     else:
         per = period
 
@@ -504,6 +505,7 @@ def prepare_control(period: Union[bool, float] = False, scorer: Callable = utils
 
     if name == 'base':
         per = ''
+        period = False
     else:
         per = period
 
