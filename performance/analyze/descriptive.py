@@ -10,8 +10,8 @@ from matplotlib import pyplot as plt
 plot_path = '/home/alex/mews/images/'
 
 if __name__ == '__main__':
-    prepared_case = mews.prepare_case_multiple()
-    prepared_control = mews.prepare_control()
+    prepared_case, _ = mews.prepare_case_multiple()
+    prepared_control, _ = mews.prepare_control()
     case_times = [] ; case_lengths = []
     control_times = [] ; control_lengths = []
     for data, values in zip([prepared_case, prepared_control], [[case_times, case_lengths],[control_times, control_lengths]]):

@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 
 plot_path = '/home/alex/mews/images/'
 # Prepared the data
-prepared_case = mews.prepare_case_multiple()
+prepared_case, _ = mews.prepare_case_multiple()
 
 minutes = 15
 def my_round(x, minutes=minutes):

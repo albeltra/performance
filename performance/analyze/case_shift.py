@@ -8,7 +8,7 @@ from scipy.stats import wilcoxon
 from performance.core import scorers, Process, augmenters
 
 if __name__ == '__main__':
-    case = mews.prepare_case_multiple()
+    case, _ = mews.prepare_case_multiple()
 
     thresh = np.arange(4, 5) + 3
 

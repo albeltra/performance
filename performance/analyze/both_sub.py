@@ -10,8 +10,8 @@ from performance.core import augmenters
 
 plot_path = '/home/alex/mews/images/'
 
-case = mews.prepare_case_multiple()
-control = mews.prepare_control()
+case, _ = mews.prepare_case_multiple()
+control, _ = mews.prepare_control()
 
 thresh = np.arange(4, 5)
 case_scorers = [scorers.PosNeg(tmin=0, tmax=np.inf)]

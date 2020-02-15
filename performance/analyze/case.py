@@ -20,7 +20,7 @@ if data_level:
 else:
     plot_path += 'score_level/'
 
-case = mews.prepare_case_multiple(period=period, scorer=mews_scorer, data_level=data_level)
+case, _ = mews.prepare_case_multiple(period=period, scorer=mews_scorer, data_level=data_level)
 
 # Set thresholds and scores to be calculated
 thresh = np.arange(0, 14)
