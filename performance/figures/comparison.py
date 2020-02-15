@@ -76,14 +76,14 @@ for f, period in enumerate([2, 4, 8]):
                 F1 = 2 * (PPV * TPR) / (PPV + TPR)
 
                 ax[f, s_ind].plot(FPR, TPR, color='C'+ str(i))
+                ax[f, s_ind].legend(['Traditional', 'Median Score', 'Worst Case Vital Sign'], loc='lower right')
 
         if scorer.__class__.__name__ == 'Lead':
             sensitivity_discount = cur_case[0, :, :, 0] / cur_case[0, :, :, 1]
             ax[f, s_ind].plot(lead_times, sensitivity_discount[4], color='C' + str(i))
+            ax[f, s_ind].legend(['Traditional', 'Median Score', 'Worst Case Vital Sign'], loc='lower right')
 
-ax[-1, 1].legend(['Traditional', 'Median Score', 'Worst Case Vital Sign'],
-                 loc='upper right',
-                 bbox_to_anchor=(1.5, 1.5))
+
 fig.tight_layout()
 fig.show()
 fig.savefig(f'/home/alex/mews/images/multiple_periods.png', dpi=600)
