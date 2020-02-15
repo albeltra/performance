@@ -1,12 +1,9 @@
-import matplotlib
 import numpy as np
-
-from performance.core import mews, metrics
-
-# matplotlib.use('Agg')
 from matplotlib import pyplot as plt
-from performance.core import scorers, Process, utils
+
 from performance.core import augmenters
+from performance.core import mews, metrics
+from performance.core import scorers, Process, utils
 
 lead_times = np.arange(0, 4, 10 / 60)
 case_scorers = [scorers.PosNeg(tmin=0, tmax=np.inf),
@@ -83,12 +80,6 @@ for f, period in enumerate([2, 4, 8]):
         if scorer.__class__.__name__ == 'Lead':
             sensitivity_discount = cur_case[0, :, :, 0] / cur_case[0, :, :, 1]
             ax[f, s_ind].plot(lead_times, sensitivity_discount[4], color='C' + str(i))
-            # plt.legend(legend, title='MEWS (>=)')
-            # plt.ylim([.4, .9])
-            # plt.xlabel('Lead Time (h)')
-            # plt.ylabel('Sensitivity')
-            # plt.savefig(f'{plot_path}{mews_scorer.__name__}/lead_discount_{period}.eps')
-            # plt.close()
 
 ax[-1, 1].legend(['Traditional', 'Median Score', 'Worst Case Vital Sign'],
                  loc='upper right',
