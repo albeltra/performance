@@ -11,6 +11,7 @@ from typing import Union, Dict, Callable
 
 path = '/home/alex/mews/data/'
 
+
 def load():
     """
     Loads case and control data as well as information on event times (code blue)
@@ -22,9 +23,10 @@ def load():
     mews_case = pd.read_csv(path + 'mews_case.csv', low_memory=False)
     mews_control = pd.read_csv(path + 'mews_control.csv', low_memory=False)
 
-    code = pd.read_csv(path  + 'case_multiple.csv', sep=',', low_memory=False)
+    code = pd.read_csv(path + 'case_multiple.csv', sep=',', low_memory=False)
 
     return mews_case, mews_control, code
+
 
 def create_case(code: pd.DataFrame, mews_case: pd.DataFrame, single_event: bool = False):
     """
@@ -61,14 +63,16 @@ def create_case(code: pd.DataFrame, mews_case: pd.DataFrame, single_event: bool 
     # Iterate through list of filtered encounters
     for encounter in code_encounters_unique[np.isin(code_encounters_unique, np.unique(encounters))]:
         # Find the index in the code and flowsheet files, corresponding to the current encounter
-        formatted_code_time = np.min([datetime.datetime.strptime(x, '%Y-%m-%d %H:%M:%S') for x in code_times[np.where(code_encounters == encounter)[0]]])
+        formatted_code_time = np.min([datetime.datetime.strptime(x, '%Y-%m-%d %H:%M:%S') for x in
+                                      code_times[np.where(code_encounters == encounter)[0]]])
         encounter_inds = np.where(encounters == encounter)[0]
 
         # Convert the time stamps for all the recorded values into a list of single strings
         date_times = [date + ' ' + time for date, time in zip(dates[encounter_inds], times[encounter_inds])]
 
         # Convert the dates/times from strings to datetime objects
-        formatted_date_times = np.asarray([datetime.datetime.strptime(item, '%Y-%m-%d %H:%M:%S.0000000') for item in date_times])
+        formatted_date_times = np.asarray(
+            [datetime.datetime.strptime(item, '%Y-%m-%d %H:%M:%S.0000000') for item in date_times])
 
         # Subtract the minimum datetime value from all datetime objects
         formatted_code_time -= np.min(formatted_date_times)
@@ -139,7 +143,8 @@ def create_control(mews_control: pd.DataFrame):
                       zip(dates[encounter_inds], times[encounter_inds])]
 
         # Convert the dates/times from strings to datetime objects
-        formatted_date_times = np.asarray([datetime.datetime.strptime(item, '%Y-%m-%d %H:%M:%S') for item in date_times])
+        formatted_date_times = np.asarray(
+            [datetime.datetime.strptime(item, '%Y-%m-%d %H:%M:%S') for item in date_times])
         formatted_date_times = formatted_date_times - np.max(formatted_date_times)
 
         # Convert the offset datetime differences into seconds
@@ -177,7 +182,7 @@ def mews_persist(data, times, period=False, scorer=False):
     for k in ['BLOOD PRESSURE SYSTOLIC', 'PULSE', 'RESPIRATIONS', 'TEMPERATURE', 'R CPN GLASGOW COMA SCALE SCORE']:
         # Get values for current vital sign
         cur_data = data[k]
-        #Find the missing and real time points for the vital sign
+        # Find the missing and real time points for the vital sign
         missing_inds = np.isnan(cur_data)
         real_inds = np.where(~missing_inds)[0]
         # Aux calculation, calculate the number of values that are missing
@@ -186,14 +191,13 @@ def mews_persist(data, times, period=False, scorer=False):
         real_times = times[real_inds]
         real_data = cur_data[real_inds]
 
-        #Check if there is any data (real not missing) for a particular vital sign
+        # Check if there is any data (real not missing) for a particular vital sign
         if len(real_inds) == 0:
             # If its GCS, move on
             if k == 'R CPN GLASGOW COMA SCALE SCORE':
                 pass
             # Else return a null response
             else:
-                print('All missing')
                 return [], [], defaultdict(lambda: 0), 0, np.arange(len(times))
 
         # Check if there is any data (real not missing) before the time of event
@@ -205,7 +209,6 @@ def mews_persist(data, times, period=False, scorer=False):
                     pass
                 # Else return null response
                 else:
-                    print('All missing')
                     return [], [], defaultdict(lambda: 0), 0, np.arange(len(times))
 
             # Check if the first real value was after the time of event
@@ -242,7 +245,6 @@ def mews_persist(data, times, period=False, scorer=False):
     if len(data['R CPN GLASGOW COMA SCALE SCORE']) != len(times):
         data['R CPN GLASGOW COMA SCALE SCORE'] = data['R CPN GLASGOW COMA SCALE SCORE'][:len(times)]
 
-
     sbp = data['BLOOD PRESSURE SYSTOLIC']
     hr = data['PULSE']
     coma = data['R CPN GLASGOW COMA SCALE SCORE']
@@ -265,7 +267,7 @@ def mews_persist(data, times, period=False, scorer=False):
 
         while start + period < 0:
             cur_inds = np.where((times >= start) & (times <= (start + period)) & (times <= 0))[0]
-            if len(cur_inds) > 0 :
+            if len(cur_inds) > 0:
                 # Check if the function takes into account the type of vital sign
                 # The function must have "vital_name" as an argument
                 if 'vital_name' in scorer.__code__.co_varnames:
@@ -344,7 +346,7 @@ def mews_persist(data, times, period=False, scorer=False):
             for id in cur_ind:
                 scores[id] += i
 
-    return scores, np.array(times_new),  missing_lengths, len(times), bad_inds
+    return scores, np.array(times_new), missing_lengths, len(times), bad_inds
 
 
 def calculate_scores(data: Dict[int, Dict[str, np.ndarray]], period: float, scorer: Callable, data_level: bool = False):
@@ -370,9 +372,12 @@ def calculate_scores(data: Dict[int, Dict[str, np.ndarray]], period: float, scor
         #     numbers[key] += np.sum(~np.isnan(v['data'][key]))
 
         if data_level:
-            v['scores'], v['time'], cur_missing, cur_total, bad_inds = mews_persist(v['data'], v['time'], period, scorer)
+            v['scores'], v['time'], cur_missing, cur_total, bad_inds = mews_persist(v['data'], v['time'], period,
+                                                                                    scorer)
         else:
             v['scores'], v['time'], cur_missing, cur_total, bad_inds = mews_persist(v['data'], v['time'])
+
+        v['raw_time'] = v['time'].copy()
 
         # If null response detected, add this encounter to list of bad encounters
         if v['scores'] == []:
@@ -390,24 +395,26 @@ def calculate_scores(data: Dict[int, Dict[str, np.ndarray]], period: float, scor
         # If performing regular MEWS calculation at the score level
         if not data_level and period:
             times = v['time']
-            scores= v['scores']
+            scores = v['scores']
             start = times[0]
 
             while start + period < 0:
                 def regular(start):
                     cur_inds = np.where(np.logical_and(times >= start, times <= (start + period)))[0]
-                    if len(cur_inds) > 0 :
+                    if len(cur_inds) > 0:
                         cur_scores = scores[cur_inds]
                         v['regular_times'].append(start + period)
                         v['regular_scores'].append(scorer(cur_scores))
                     else:
                         v['regular_times'].append(start + period)
                         v['regular_scores'].append(v['regular_scores'][-1])
+
                 regular(start)
                 start += period
 
             v['scores'] = v['regular_scores']
             v['time'] = v['regular_times']
+        v['data'] = dict(v['data'])
 
     # Delete all the bad encounters
     for k in bad_encounters:
@@ -429,13 +436,16 @@ def prepare(data):
     :param data: dictionary of data. Key = encounter ID. Value = dictionary with keys: time, scores, and data
     :return:
     '''
-    times = [] ; scores = [] ; e = []
-    print(len(data.keys()), len(np.unique(data.keys())))
+    times = []
+    scores = []
+    e = []
     for encounter in data.keys():
         times.append(np.array(data[encounter]['time']))
         scores.append(np.array(data[encounter]['scores']))
         e.append(np.array([encounter] * len(times[-1])))
-    return np.hstack((np.concatenate(e).reshape(-1,1), -np.concatenate(times).reshape(-1,1), np.concatenate(scores).reshape(-1,1)))
+    return np.hstack((np.concatenate(e).reshape(-1, 1), -np.concatenate(times).reshape(-1, 1),
+                      np.concatenate(scores).reshape(-1, 1)))
+
 
 def prepare_case_multiple(period=False, scorer='base', data_level=False):
     ''''
@@ -447,17 +457,18 @@ def prepare_case_multiple(period=False, scorer='base', data_level=False):
         - prepared_case - numpy array of
     '''
     if period:
-        name = scorer.__name__
         per = period
     else:
-        name = 'base'
         per = ''
 
+    name = scorer.__name__
     type = '_data' * data_level
 
     if os.path.isfile(path + f'prepared_case_multiple_{name}_{per}{type}.pkl'):
-        with open(f'/home/alex/mews/data/prepared_case_multiple_{name}_{per}{type}.pkl', 'rb') as f:
-            return pickle.load(f)
+        prepared_case = pickle.load(open(f'/home/alex/mews/data/prepared_case_multiple_{name}_{per}{type}.pkl', 'rb'))
+        case = pickle.load(open(f'/home/alex/mews/data/prepared_case_multiple_{name}_{per}{type}_raw.pkl', 'rb'))
+        return prepared_case, case
+
     else:
         # Load the data
         mews_code, mews_control, code = load()
@@ -467,9 +478,13 @@ def prepare_case_multiple(period=False, scorer='base', data_level=False):
         calculate_scores(case, period, scorer, data_level)
         # Prepare as a single numpy array
         prepared_case = prepare(case)
-        with open(path  + f'prepared_case_multiple_{name}_{per}{type}.pkl', 'wb',) as f:
+        with open(path + f'prepared_case_multiple_{name}_{per}{type}.pkl', 'wb', ) as f:
             pickle.dump(prepared_case, f)
-        return prepared_case
+        with open(path + f'prepared_case_multiple_{name}_{per}{type}_raw.pkl', 'wb', ) as f:
+            pickle.dump(dict(case), f)
+
+        return prepared_case, case
+
 
 def prepare_control(period: Union[bool, float] = False, scorer: Callable = 'base', data_level: bool = False):
     """
@@ -482,21 +497,18 @@ def prepare_control(period: Union[bool, float] = False, scorer: Callable = 'base
     :param data_level:
     :return:
     """
-    if period:
-        name = scorer.__name__
+    if period != False:
         per = period
     else:
-        name = scorer
         per = ''
 
-    if data_level:
-        type = '_data'
-    else:
-        type = ''
+    name = scorer.__name__
+    type = '_data' * data_level
 
-    if os.path.isfile(path + f'prepared_control_multiple_{name}_{per}{type}.pkl'):
-        with open(f'/home/alex/mews/data/prepared_control_multiple_{name}_{per}{type}.pkl', 'rb') as f:
-            return pickle.load(f)
+    if os.path.isfile(path + f'prepared_control_{name}_{per}{type}.pkl'):
+        prepared_control = pickle.load(open(f'/home/alex/mews/data/prepared_control_{name}_{per}{type}.pkl', 'rb'))
+        control = pickle.load(open(f'/home/alex/mews/data/prepared_control_{name}_{per}{type}_raw.pkl', 'rb'))
+        return prepared_control, control
     else:
         # Load the data
         mews_code, mews_control, code = load()
@@ -506,6 +518,8 @@ def prepare_control(period: Union[bool, float] = False, scorer: Callable = 'base
         calculate_scores(control, period, scorer, data_level)
         # Prepare the data as a single numpy array
         prepared_control = prepare(control)
-        with open(path  + f'prepared_control_multiple_{name}_{per}{type}.pkl', 'wb',) as f:
+        with open(path + f'prepared_control_{name}_{per}{type}.pkl', 'wb', ) as f:
             pickle.dump(prepared_control, f)
-        return prepared_control
+        with open(path + f'prepared_control_{name}_{per}{type}_raw.pkl', 'wb', ) as f:
+            pickle.dump(control, f)
+        return prepared_control, control
