@@ -6,7 +6,7 @@ from performance.core import mews, utils
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 
-path = '/home/alex/mews/images'
+path = '/home/alex/mews/images/profiles/'
 
 
 for data_level in [True, False]:
@@ -35,8 +35,8 @@ for data_level in [True, False]:
                 ax[j + 1].set_xlabel('Time (h)')
                 if data_level:
                     plt.savefig(
-                        f'/home/alex/mews/images/profiles/data_level/{mews_scorer.__name__}{("/" + str(period)) * (period is not False)}/profile_{i}.eps')
+                        f'{path}data_level/{mews_scorer.__name__}{("/" + str(period)) * (period is not False)}/profile_{i}.eps')
                 else:
                     plt.savefig(
-                        f'/home/alex/mews/images/profiles/score_level/{mews_scorer.__name__}{("/" + str(period)) * (period is not False)}/profile_{i}.eps')
+                        f'{path}score_level/{mews_scorer.__name__}{("/" + str(period)) * (period is not False)}/profile_{i}.eps')
                 plt.close()
