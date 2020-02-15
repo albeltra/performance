@@ -9,6 +9,8 @@ from scipy.interpolate import interp1d
 
 from typing import Union, Dict, Callable
 
+from performance.core import utils
+
 path = '/home/alex/mews/data/'
 
 
@@ -456,12 +458,13 @@ def prepare_case_multiple(period=False, scorer='base', data_level=False):
     :return:
         - prepared_case - numpy array of
     '''
-    if period:
-        per = period
-    else:
-        per = ''
-
     name = scorer.__name__
+
+    if name == 'base':
+        per = ''
+    else:
+        per = period
+
     type = '_data' * data_level
 
     if os.path.isfile(path + f'prepared_case_multiple_{name}_{per}{type}.pkl'):
@@ -486,7 +489,7 @@ def prepare_case_multiple(period=False, scorer='base', data_level=False):
         return prepared_case, case
 
 
-def prepare_control(period: Union[bool, float] = False, scorer: Callable = 'base', data_level: bool = False):
+def prepare_control(period: Union[bool, float] = False, scorer: Callable = utils.base, data_level: bool = False):
     """
     Checks if the data has bee prepared for control patients
 
@@ -497,12 +500,13 @@ def prepare_control(period: Union[bool, float] = False, scorer: Callable = 'base
     :param data_level:
     :return:
     """
-    if period != False:
-        per = period
-    else:
-        per = ''
-
     name = scorer.__name__
+
+    if name == 'base':
+        per = ''
+    else:
+        per = period
+
     type = '_data' * data_level
 
     if os.path.isfile(path + f'prepared_control_{name}_{per}{type}.pkl'):
