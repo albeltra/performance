@@ -74,7 +74,7 @@ for cur_case, cur_case_raw, scorer in zip(case_count, case_count_raw, case_score
             sensitivity_discount = d[:, 0] / d[:, 1]
             print(thresh)
             print(sensitivity_discount)
-            plt.bar(thresh, sensitivity_discount, align='center', alpha=0.5)
+            plt.bar(thresh, sensitivity_discount, align='center')
             plt.ylim([0, 1])
             plt.xticks(np.arange(0, 14))
             plt.xlabel('Hour Before Event')
@@ -90,7 +90,7 @@ for cur_case, cur_case_raw, scorer in zip(case_count, case_count_raw, case_score
             d_new = d[:, 0] / d[:, 1]
 
             plt.figure()
-            plt.bar(y_pos, d_new, align='center', alpha=0.5)
+            plt.bar(y_pos, d_new, align='center')
             plt.ylim(0, 1)
             plt.xticks(y_pos, objects)
             plt.ylabel('Proportion of Time')
@@ -109,7 +109,7 @@ for cur_case, cur_case_raw, scorer in zip(case_count, case_count_raw, case_score
 
             fig, ax1 = plt.subplots()
             ax2 = ax1.twinx()
-            f = ax1.bar(y_pos, new, align='center', alpha=0.5)
+            f = ax1.bar(y_pos, new, align='center')
             f[3].set_color('r')
 
             ax1.set_ylabel('Proportion of Warnings', color='b')
@@ -131,7 +131,7 @@ for cur_case, cur_case_raw, scorer in zip(case_count, case_count_raw, case_score
             ax2 = ax1.twinx()
             ax2.yaxis.set_ticklabels([''] * len(ax2.get_xticklabels()))
             ax2.yaxis.set_ticks_position('none')
-            f = ax1.bar(y_pos, new, align='center', alpha=0.5)
+            f = ax1.bar(y_pos, new, align='center')
             f[3].set_color('r')
 
             ax1.set_ylabel('# of Warnings per Event', color='b')
