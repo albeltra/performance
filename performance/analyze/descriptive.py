@@ -19,6 +19,12 @@ if __name__ == '__main__':
             cur_data = data[data[:, 0] == encounter, :]
             values[0].append(np.max(cur_data[:, 1]))
             values[1].append(np.sum(cur_data[:, 1] >= 0))
+
+
+    print('Means')
+    print('Case:', np.mean(np.divide(case_lengths, case_times)), 'Control:', np.mean(np.divide(control_lengths, control_times)))
+    print('Standard Deviations')
+    print('Case:', np.std(np.divide(case_lengths, case_times)), 'Control:', np.std(np.divide(control_lengths, control_times)))
     plt.boxplot([case_lengths, control_lengths])
     plt.title('Boxplot of # MEWS Scores Per Patient')
     plt.xticks([1,2],['Case', 'Control'])

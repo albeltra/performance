@@ -286,7 +286,6 @@ def mews_persist(data, times, period=False, scorer=False):
                     coma_new.append(scorer(coma[cur_inds]))
                     resp_new.append(scorer(resp[cur_inds]))
                     temp_new.append(scorer(temp[cur_inds]))
-
                 times_new.append(start + period)
             start += period
 
@@ -449,7 +448,7 @@ def prepare(data):
                       np.concatenate(scores).reshape(-1, 1)))
 
 
-def prepare_case_multiple(period=False, scorer='base', data_level=False):
+def prepare_case_multiple(period=False, scorer=utils.base, data_level=False):
     ''''
     Checks if the data has been prepared for case patients with multiple events.
 
