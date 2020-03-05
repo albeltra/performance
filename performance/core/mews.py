@@ -397,9 +397,9 @@ def calculate_scores(data: Dict[int, Dict[str, np.ndarray]], period: float, scor
         if not data_level and period:
             times = v['time']
             scores = v['scores']
-            start = times[0]
+            start_ = times[0]
 
-            while start + period < 0:
+            while start_ + period < 0:
                 def regular(start):
                     cur_inds = np.where(np.logical_and(times >= start, times <= (start + period)))[0]
                     if len(cur_inds) > 0:
@@ -410,8 +410,8 @@ def calculate_scores(data: Dict[int, Dict[str, np.ndarray]], period: float, scor
                         v['regular_times'].append(start + period)
                         v['regular_scores'].append(v['regular_scores'][-1])
 
-                regular(start)
-                start += period
+                regular(start_)
+                start_ += period
 
             v['scores'] = v['regular_scores']
             v['time'] = v['regular_times']
@@ -467,9 +467,9 @@ def prepare_case_multiple(period=False, scorer=utils.base, data_level=False):
 
     type = '_data' * data_level
 
-    if os.path.isfile(path + f'prepared_case_multiple_{name}_{per}{type}.pkl'):
-        prepared_case = pickle.load(open(f'/home/alex/mews/data/prepared_case_multiple_{name}_{per}{type}.pkl', 'rb'))
-        case = pickle.load(open(f'/home/alex/mews/data/prepared_case_multiple_{name}_{per}{type}_raw.pkl', 'rb'))
+    if os.path.isfile(f'{path}prepared_case_multiple_{name}_{per}{type}.pkl'):
+        prepared_case = pickle.load(open(f'{path}prepared_case_multiple_{name}_{per}{type}.pkl', 'rb'))
+        case = pickle.load(open(f'{path}/prepared_case_multiple_{name}_{per}{type}_raw.pkl', 'rb'))
         return prepared_case, case
 
     else:
@@ -481,9 +481,9 @@ def prepare_case_multiple(period=False, scorer=utils.base, data_level=False):
         calculate_scores(case, period, scorer, data_level)
         # Prepare as a single numpy array
         prepared_case = prepare(case)
-        with open(path + f'prepared_case_multiple_{name}_{per}{type}.pkl', 'wb', ) as f:
+        with open(f'{path}prepared_case_multiple_{name}_{per}{type}.pkl', 'wb', ) as f:
             pickle.dump(prepared_case, f)
-        with open(path + f'prepared_case_multiple_{name}_{per}{type}_raw.pkl', 'wb', ) as f:
+        with open(f'{path}prepared_case_multiple_{name}_{per}{type}_raw.pkl', 'wb', ) as f:
             pickle.dump(dict(case), f)
 
         return prepared_case, case
@@ -510,9 +510,9 @@ def prepare_control(period: Union[bool, float] = False, scorer: Callable = utils
 
     type = '_data' * data_level
 
-    if os.path.isfile(path + f'prepared_control_{name}_{per}{type}.pkl'):
-        prepared_control = pickle.load(open(f'/home/alex/mews/data/prepared_control_{name}_{per}{type}.pkl', 'rb'))
-        control = pickle.load(open(f'/home/alex/mews/data/prepared_control_{name}_{per}{type}_raw.pkl', 'rb'))
+    if os.path.isfile(f'{path}prepared_control_{name}_{per}{type}.pkl'):
+        prepared_control = pickle.load(open(f'{path}prepared_control_{name}_{per}{type}.pkl', 'rb'))
+        control = pickle.load(open(f'{path}prepared_control_{name}_{per}{type}_raw.pkl', 'rb'))
         return prepared_control, control
     else:
         # Load the data
@@ -523,8 +523,8 @@ def prepare_control(period: Union[bool, float] = False, scorer: Callable = utils
         calculate_scores(control, period, scorer, data_level)
         # Prepare the data as a single numpy array
         prepared_control = prepare(control)
-        with open(path + f'prepared_control_{name}_{per}{type}.pkl', 'wb', ) as f:
+        with open(f'{path}prepared_control_{name}_{per}{type}.pkl', 'wb', ) as f:
             pickle.dump(prepared_control, f)
-        with open(path + f'prepared_control_{name}_{per}{type}_raw.pkl', 'wb', ) as f:
+        with open(f'{path}prepared_control_{name}_{per}{type}_raw.pkl', 'wb', ) as f:
             pickle.dump(control, f)
         return prepared_control, control
