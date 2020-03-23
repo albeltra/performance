@@ -74,8 +74,8 @@ def roc(case, control, thresh, tmax=np.inf):
     return FPR, TPR
 
 if __name__ == '__main__':
-    case = mews.prepare_case_multiple()
-    control = mews.prepare_control()
+    case, _ = mews.prepare_case_multiple()
+    control, _ = mews.prepare_control()
 
     print(all_metrics(case, control, np.arange(0,14)))
     print(sensitivity_lead(case, thresh=np.arange(0,14), lead_times=np.arange(0, 12, 10/60), discounted=False))

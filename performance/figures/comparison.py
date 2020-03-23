@@ -87,4 +87,4 @@ for f, period in enumerate(periods):
 
 fig.tight_layout()
 fig.show()
-fig.savefig(f'/home/alex/mews/images/multiple_periods.png', dpi=600)
+fig.savefig(f'/home/alex/mews/images/multiple_periods.eps')
