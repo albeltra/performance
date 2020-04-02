@@ -368,9 +368,6 @@ def calculate_scores(data: Dict[int, Dict[str, np.ndarray]], period: float, scor
     for i, (k, v) in enumerate(data.items()):
         v['regular_scores'] = []
         v['regular_times'] = []
-        for key in v['data'].keys():
-            ranges[key] += np.abs(np.min(v['time']))
-            numbers[key] += np.sum(~np.isnan(v['data'][key]))
 
         if data_level:
             v['scores'], v['time'], cur_missing, cur_total, bad_inds = mews_persist(v['data'], v['time'], period,
@@ -388,10 +385,15 @@ def calculate_scores(data: Dict[int, Dict[str, np.ndarray]], period: float, scor
             # Double check that there is some real data before the time of event
             if np.sum(v['time'] <= 0) == 0:
                 bad_encounters.append(k)
+            else:
+                ### STORE ENCOUNTER LENGTHS, NUMBER OF DATA POINTS, AND NUMBER OF MISSING DATA POINTS ###
+                for key in v['data'].keys():
+                    ranges[key] += np.abs(np.min(v['time']))
+                    numbers[key] += np.sum(~np.isnan(v['data'][key]))
 
-        for k in cur_missing.keys():
-            missing[k] += cur_missing[k]
-        total += cur_total
+                for k in cur_missing.keys():
+                    missing[k] += cur_missing[k]
+                total += cur_total
 
         # If performing regular MEWS calculation at the score level
         if not data_level and period:
