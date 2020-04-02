@@ -381,8 +381,8 @@ def calculate_scores(data: Dict[int, Dict[str, np.ndarray]], period: float, scor
 
         v['raw_time'] = v['time'].copy()
 
-        for k in cur_missing.keys():
-            missing[k] += cur_missing[k]
+        for key in cur_missing.keys():
+            missing[key] += cur_missing[key]
         total += cur_total
 
         # If null response detected, add this encounter to list of bad encounters
