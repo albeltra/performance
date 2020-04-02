@@ -359,18 +359,18 @@ def calculate_scores(data: Dict[int, Dict[str, np.ndarray]], period: float, scor
     :param data_level:
     :return:
     """
-    # missing = defaultdict(lambda: 0)
-    # ranges = defaultdict(lambda: 0)
-    # numbers = defaultdict(lambda: 0)
+    missing = defaultdict(lambda: 0)
+    ranges = defaultdict(lambda: 0)
+    numbers = defaultdict(lambda: 0)
 
-    # total = 0
+    total = 0
     bad_encounters = []
     for i, (k, v) in enumerate(data.items()):
         v['regular_scores'] = []
         v['regular_times'] = []
-        # for key in v['data'].keys():
-        #     ranges[key] += np.abs(np.min(v['time']))
-        #     numbers[key] += np.sum(~np.isnan(v['data'][key]))
+        for key in v['data'].keys():
+            ranges[key] += np.abs(np.min(v['time']))
+            numbers[key] += np.sum(~np.isnan(v['data'][key]))
 
         if data_level:
             v['scores'], v['time'], cur_missing, cur_total, bad_inds = mews_persist(v['data'], v['time'], period,
@@ -389,9 +389,9 @@ def calculate_scores(data: Dict[int, Dict[str, np.ndarray]], period: float, scor
             if np.sum(v['time'] <= 0) == 0:
                 bad_encounters.append(k)
 
-        # for k in cur_missing.keys():
-        #     missing[k] += cur_missing[k]
-        # total += cur_total
+        for k in cur_missing.keys():
+            missing[k] += cur_missing[k]
+        total += cur_total
 
         # If performing regular MEWS calculation at the score level
         if not data_level and period:
@@ -421,8 +421,9 @@ def calculate_scores(data: Dict[int, Dict[str, np.ndarray]], period: float, scor
     for k in bad_encounters:
         del data[k]
 
-    # for k in ranges.keys():
-    #     print(k, numbers[k] / ranges[key])
+    print("Mean imputation frequencies:")
+    for k in missing.keys():
+        print(k, missing[k] / numbers[k])
 
 
 def prepare(data):
